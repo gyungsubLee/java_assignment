@@ -1,4 +1,4 @@
-package com.example.assignment.member.service;
+package com.example.assignment.member.repository;
 
 import com.example.assignment.member.domain.Member;
 import org.springframework.stereotype.Repository;

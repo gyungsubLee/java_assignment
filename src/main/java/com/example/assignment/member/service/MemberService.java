@@ -2,13 +2,14 @@ package com.example.assignment.member.service;
 
 import com.example.assignment.common.auth.JwtTokenProvider;
 import com.example.assignment.common.exception.EmailNotFoundException;
-import com.example.assignment.common.exception.custom.InvalidPasswordException;
+import com.example.assignment.common.exception.custom.InvalidEmailAndPasswordException;
 import com.example.assignment.common.exception.custom.MemberAlreadyExistsException;
 import com.example.assignment.member.domain.Member;
 import com.example.assignment.member.dto.MemberSignupReq;
 import com.example.assignment.member.dto.MemberSignupRes;
 import com.example.assignment.member.dto.MemberloginReq;
 import com.example.assignment.member.dto.MemberloginRes;
+import com.example.assignment.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -44,13 +45,13 @@ public class MemberService {
     public MemberloginRes login(MemberloginReq request) {
 
         if (isEmailNotFound(request.getEmail())) {
-            throw new EmailNotFoundException();
+            throw new InvalidEmailAndPasswordException();
         }
 
         Member findMember = memberRepository.findByEmail(request.getEmail());
 
         if(!isValidMember(request.getPassword(), findMember.getPassword())) {
-            throw new InvalidPasswordException();
+            throw new InvalidEmailAndPasswordException();
         }
 
         String token = jwtTokenProvider.createToken(findMember.getEmail(), String.valueOf(findMember.getRole()));
