@@ -48,8 +48,9 @@ public class GlobalExceptionHandler {
     }
 
     private <T> ResponseEntity<ErrorResponse<T>> buildErrorResponse(ErrorCode errorCode, T message) {
+        log.error("error: {} - {}", errorCode.name(), errorCode.getMessage());
+
         ErrorResponse<T> errorResponse = ErrorResponse.from(errorCode, message);
-        log.error("error: {}", errorResponse.getClass().getSimpleName());
 
         return ResponseEntity
                 .status(errorCode.getHttpStatus())

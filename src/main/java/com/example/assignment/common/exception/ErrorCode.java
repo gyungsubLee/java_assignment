@@ -3,7 +3,7 @@ package com.example.assignment.common.exception;
 import com.example.assignment.common.exception.custom.InvalidAuthHeaderException;
 import com.example.assignment.common.exception.custom.InvalidTokenException;
 import com.example.assignment.common.exception.custom.MemberAlreadyExistsException;
-import com.example.assignment.common.exception.custom.InvalidPasswordException;
+import com.example.assignment.common.exception.custom.InvalidEmailAndPasswordException;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.MalformedJwtException;
 import lombok.Getter;
@@ -22,8 +22,7 @@ public enum ErrorCode {
 
     // 회원 ( Member )
     USER_ALREADY_EXISTS(Category.MEMBER, HttpStatus.CONFLICT, "M001", "이미 가입된 사용자 입니다.", MemberAlreadyExistsException.class),
-    INVALID_CREDENTIALS(Category.MEMBER, HttpStatus.UNAUTHORIZED, "M002", "비밀번호가 올바르지 않습니다.", InvalidPasswordException.class),
-    EMAIL_NOT_FOUND(Category.MEMBER, HttpStatus.UNAUTHORIZED, "M002", "이메일 정보를 찾을 수 없습니다.", EmailNotFoundException.class),
+    INVALID_CREDENTIALS(Category.MEMBER, HttpStatus.UNAUTHORIZED, "M002", "아이디 또는 비밀번호가 올바르지 않습니다.", InvalidEmailAndPasswordException.class),
 
     // 서버 오류
     INTERNAL_SERVER_ERROR(Category.SERVER, HttpStatus.INTERNAL_SERVER_ERROR, "S001", "서버 내부 오류가 발생했습니다.", null);;
