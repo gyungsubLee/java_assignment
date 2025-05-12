@@ -1,6 +1,7 @@
 package com.example.assignment.common.configs;
 
 import com.example.assignment.common.auth.JwtAuthFilter;
+import com.example.assignment.common.auth.JwtAuthenticationEntryPoint;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -22,6 +23,7 @@ import java.util.List;
 public class SecurityConfigs {
 
     private final JwtAuthFilter jwtAuthFilter;
+    private final JwtAuthenticationEntryPoint authenticationEntryPoint;
 
     public static final String CLIENT_URL = "http://localhost:3000";
 
@@ -37,6 +39,8 @@ public class SecurityConfigs {
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .csrf(AbstractHttpConfigurer::disable)
                 .httpBasic(AbstractHttpConfigurer::disable)
+                .exceptionHandling(exception -> exception
+                        .authenticationEntryPoint(authenticationEntryPoint))
                 .authorizeHttpRequests(a -> a.requestMatchers(PUBLIC_ENDPOINTS).permitAll().anyRequest().authenticated())
                 .sessionManagement(s->s.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
