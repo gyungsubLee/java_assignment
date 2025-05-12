@@ -2,6 +2,8 @@ package com.example.assignment.member.controller;
 
 import com.example.assignment.member.dto.MemberSignupReq;
 import com.example.assignment.member.dto.MemberSignupRes;
+import com.example.assignment.member.dto.MemberloginReq;
+import com.example.assignment.member.dto.MemberloginRes;
 import com.example.assignment.member.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -20,5 +22,10 @@ public class MemberController {
     @PostMapping("/signup")
     public ResponseEntity<MemberSignupRes> signup(@RequestBody MemberSignupReq request) {
         return ResponseEntity.ok().body(memberService.signup(request));
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<MemberloginRes> login(@RequestBody MemberloginReq request) {
+        return ResponseEntity.ok().body(memberService.login(request));
     }
 }

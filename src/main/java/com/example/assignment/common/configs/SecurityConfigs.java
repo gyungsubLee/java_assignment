@@ -27,7 +27,7 @@ public class SecurityConfigs {
 
     public static final String[] PUBLIC_ENDPOINTS = {
             "/members/signup",
-            "/member/login"
+            "/members/login"
     };
 
 
