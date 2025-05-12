@@ -25,7 +25,9 @@ public class SecurityConfigs {
     private final JwtAuthFilter jwtAuthFilter;
     private final JwtAuthenticationEntryPoint authenticationEntryPoint;
 
-    public static final String CLIENT_URL = "http://localhost:3000";
+    public static final String CORS_ALLOWED_ORIGIN = "http://localhost:3000";
+    public static final String ADMIN_ENDPOINT_PATTERN = "/admin/**";
+    public static final String ROLE_ADMIN = "ADMIN";  // ROLE_ADMIN 으로 인식
 
     public static final String[] PUBLIC_ENDPOINTS = {
             "/members/signup",
@@ -41,7 +43,11 @@ public class SecurityConfigs {
                 .httpBasic(AbstractHttpConfigurer::disable)
                 .exceptionHandling(exception -> exception
                         .authenticationEntryPoint(authenticationEntryPoint))
-                .authorizeHttpRequests(a -> a.requestMatchers(PUBLIC_ENDPOINTS).permitAll().anyRequest().authenticated())
+                .authorizeHttpRequests(auth -> auth
+                        .requestMatchers(PUBLIC_ENDPOINTS).permitAll()
+                        .requestMatchers(ADMIN_ENDPOINT_PATTERN).hasRole(ROLE_ADMIN)
+                        .anyRequest().authenticated()
+                )
                 .sessionManagement(s->s.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
@@ -50,7 +56,7 @@ public class SecurityConfigs {
     @Bean
     CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(List.of(CLIENT_URL));
+        configuration.setAllowedOrigins(List.of(CORS_ALLOWED_ORIGIN));
         configuration.setAllowedMethods(List.of("*"));
         configuration.setAllowedHeaders(List.of("*"));
         configuration.setAllowCredentials(true);
