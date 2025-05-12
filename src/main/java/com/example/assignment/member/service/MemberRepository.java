@@ -14,7 +14,11 @@ public class MemberRepository {
         store.put(member.getEmail(), member);
     }
 
-    public boolean findByEmail(String email) {
+    public Member findByEmail(String email) {
+        return store.get(email);
+    }
+
+    public boolean existsByEmail(String email) {
         return store.containsKey(email);
     }
 }

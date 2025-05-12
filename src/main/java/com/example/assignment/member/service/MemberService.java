@@ -1,9 +1,14 @@
 package com.example.assignment.member.service;
 
+import com.example.assignment.common.auth.JwtTokenProvider;
+import com.example.assignment.common.exception.EmailNotFoundException;
+import com.example.assignment.common.exception.custom.InvalidPasswordException;
 import com.example.assignment.common.exception.custom.MemberAlreadyExistsException;
 import com.example.assignment.member.domain.Member;
 import com.example.assignment.member.dto.MemberSignupReq;
 import com.example.assignment.member.dto.MemberSignupRes;
+import com.example.assignment.member.dto.MemberloginReq;
+import com.example.assignment.member.dto.MemberloginRes;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -12,20 +17,22 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class MemberService {
 
-    private final PasswordEncoder passwordEncoder;
     private final MemberRepository memberRepository;
+    private final PasswordEncoder passwordEncoder;
+    private final JwtTokenProvider jwtTokenProvider;
+
 
     public MemberSignupRes signup(MemberSignupReq request) {
 
-        if (isValidEmail(request.email())) {
+        if (isValidEmail(request.getEmail())) {
             throw new MemberAlreadyExistsException();
         }
 
         Member member = Member.builder()
-                .username(request.username())
-                .nickname(request.nickname())
-                .email(request.email())
-                .password(passwordEncoder.encode(request.password()))
+                .username(request.getUsername())
+                .nickname(request.getNickname())
+                .email(request.getEmail())
+                .password(passwordEncoder.encode(request.getPassword()))
                 .build();
 
         memberRepository.save(member);
@@ -33,7 +40,33 @@ public class MemberService {
         return MemberSignupRes.from(member);
     }
 
+
+    public MemberloginRes login(MemberloginReq request) {
+
+        if (isEmailNotFound(request.getEmail())) {
+            throw new EmailNotFoundException();
+        }
+
+        Member findMember = memberRepository.findByEmail(request.getEmail());
+
+        if(!isValidMember(request.getPassword(), findMember.getPassword())) {
+            throw new InvalidPasswordException();
+        }
+
+        String token = jwtTokenProvider.createToken(findMember.getEmail(), String.valueOf(findMember.getRole()));
+
+        return MemberloginRes.from(token);
+    }
+
     private boolean isValidEmail(String email) {
-        return memberRepository.findByEmail(email);
+        return memberRepository.existsByEmail(email);
+    }
+
+    private boolean isEmailNotFound(String email) {
+        return !memberRepository.existsByEmail(email);
+    }
+
+    private boolean isValidMember(String rawPassword, String encodedPassword) {
+        return passwordEncoder.matches(rawPassword, encodedPassword);
     }
 }
