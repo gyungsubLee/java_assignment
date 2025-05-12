@@ -1,12 +1,9 @@
 server:
-  port: 8080
+  port: 8000
 
 spring:
   application:
     name:assignment
-
-  Y2hhdHNlcnZlcnNlY3JldGtleWNoYXRzZXJ2ZXJzZWNyZXRrZXljaGF0c2VydmVyc2VjcmV0a2V5Y2hhdHNlcnZlcnNlY3JldGtleQ==
-  3000
 
 jwt:
   secretKey: ${JWT_SECRET_KEY}
