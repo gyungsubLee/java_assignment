@@ -12,7 +12,7 @@ public class MemberInfoRes {
     @Schema(description = "회원 ID", example = "1")
     private Long id;
 
-    @Schema(description = "회원 권한", example = "ADMIN") // Enum 타입의 권한 필드
+    @Schema(description = "회원 권한", example = "MEMBER") // Enum 타입의 권한 필드
     private Role role;
 
     @Schema(description = "회원 이름", example = "hong123") // 사용자명

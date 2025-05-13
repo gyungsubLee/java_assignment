@@ -36,10 +36,16 @@ public class AdminController {
             description = "관리자 생성 성공",
             content = @Content(
                     mediaType = "application/json",
-                    schema = @Schema(implementation = MemberSignupRes.class)
+                    schema = @Schema(example = """
+                            {
+                              "username": "admin123",
+                              "nickname": "홍길동",
+                              "roles": ["ADMIN"]
+                            }
+                            """)
             )
     )
-    @ApiMemberAlreadyExistErrorResponse
+    @ApiAcoountAlreadyExistErrorResponse
     @ApiInternalServerErrorResponse
     public ResponseEntity<MemberSignupRes> signup(@RequestBody MemberSignupReq request) {
         return ResponseEntity.status(HttpStatus.CREATED)

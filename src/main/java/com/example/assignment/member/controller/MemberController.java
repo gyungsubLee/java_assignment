@@ -1,5 +1,6 @@
 package com.example.assignment.member.controller;
 
+import com.example.assignment.common.annotations.swagger.ApiAcoountAlreadyExistErrorResponse;
 import com.example.assignment.common.annotations.swagger.ApiInternalServerErrorResponse;
 import com.example.assignment.common.annotations.swagger.ApiUnauthorizedResponse;
 import com.example.assignment.member.domain.Role;
@@ -46,9 +47,16 @@ public class MemberController {
             description = "유저 생성 성공",
             content = @Content(
                     mediaType = "application/json",
-                    schema = @Schema(implementation = MemberSignupRes.class)
+                    schema = @Schema(example = """
+                            {
+                              "username": "user123",
+                              "nickname": "홍길동",
+                              "roles": ["MEMBER"]
+                            }
+                            """)
             )
     )
+    @ApiAcoountAlreadyExistErrorResponse
     @ApiInternalServerErrorResponse
     public ResponseEntity<MemberSignupRes> signup(@RequestBody MemberSignupReq request) {
         return ResponseEntity.ok().body(memberService.signup(request, Role.MEMBER));
