@@ -30,8 +30,12 @@ public class SecurityConfigs {
     public static final String ROLE_ADMIN = "ADMIN";  // ROLE_ADMIN 으로 인식
 
     public static final String[] PUBLIC_ENDPOINTS = {
-            "/members/signup",
-            "/members/login"
+            "/api-test/**",
+            "/swagger-ui/**",
+            "/v3/api-docs/**",
+            "/api/v1/members/signup",
+            "/api/v1/members/login",
+            "/error"
     };
 
 

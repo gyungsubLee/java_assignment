@@ -1,7 +1,8 @@
 package com.example.assignment.common.auth;
 
+import com.example.assignment.common.exception.DefaultErrorResponse;
 import com.example.assignment.common.exception.ErrorCode;
-import com.example.assignment.common.exception.ErrorResponse;
+import com.example.assignment.common.exception.ErrorResponseString;
 import com.example.assignment.common.exception.ExceptionResolver;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletRequest;
@@ -45,7 +46,7 @@ public class JwtErrorResponder {
                 String path = request.getRequestURI();
                 String method = request.getMethod();
 
-                ErrorResponse<String> errorResponse = ErrorResponse.from(code, code.getMessage());
+                DefaultErrorResponse errorResponse = ErrorResponseString.from(code, code.getMessage());
                 return objectMapper.writeValueAsString(errorResponse);
             }
             catch (Exception e) {

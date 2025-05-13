@@ -13,3 +13,11 @@ logging:
   level:
     org.springframework: INFO
 
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+  swagger-ui:
+    path: /api-test
+    groups-order: DESC
+    tags-sorter: alpha
+

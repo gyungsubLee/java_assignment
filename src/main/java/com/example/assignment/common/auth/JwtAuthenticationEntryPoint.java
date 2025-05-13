@@ -1,7 +1,8 @@
 package com.example.assignment.common.auth;
 
+import com.example.assignment.common.exception.DefaultErrorResponse;
 import com.example.assignment.common.exception.ErrorCode;
-import com.example.assignment.common.exception.ErrorResponse;
+import com.example.assignment.common.exception.ErrorResponseString;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -21,7 +22,7 @@ public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
 
         String message = String.format("%s 경로에 인증이 필요합니다.", request.getRequestURI());
 
-        ErrorResponse<String> errorResponse = ErrorResponse.from(
+        DefaultErrorResponse errorResponse = ErrorResponseString.from(
                 ErrorCode.AUTHENTICATION_REQUIRED,
                 message
         );
