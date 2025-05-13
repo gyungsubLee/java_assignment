@@ -21,6 +21,7 @@ public enum ErrorCode {
     EXPIRED_TOKEN(Category.AUTH, HttpStatus.UNAUTHORIZED, "A003", "토큰이 만료되었습니다.", ExpiredJwtException.class),
     MALFORMED_TOKEN(Category.AUTH, HttpStatus.UNAUTHORIZED, "A004", "손상된 토큰입니다.", MalformedJwtException.class),
     AUTHENTICATION_REQUIRED(Category.AUTH, HttpStatus.UNAUTHORIZED, "A008", "인증이 필요합니다.", AuthenticationCredentialsNotFoundException.class),
+    FORBIDDEN_ACCESS(Category.AUTH, HttpStatus.FORBIDDEN, "A005", "접근 권한이 없습니다.", org.springframework.security.access.AccessDeniedException.class),
 
     // 회원 ( Member )
     MEMBER_ALREADY_EXISTS(Category.MEMBER, HttpStatus.CONFLICT, "M001", "이미 가입된 사용자 입니다.", MemberAlreadyExistsException.class),
