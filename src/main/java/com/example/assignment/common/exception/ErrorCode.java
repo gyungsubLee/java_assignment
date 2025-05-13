@@ -1,9 +1,9 @@
 package com.example.assignment.common.exception;
 
 import com.example.assignment.common.exception.custom.InvalidAuthHeaderException;
+import com.example.assignment.common.exception.custom.InvalidCredentialsException;
 import com.example.assignment.common.exception.custom.InvalidTokenException;
 import com.example.assignment.common.exception.custom.MemberAlreadyExistsException;
-import com.example.assignment.common.exception.custom.InvalidEmailAndPasswordException;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.MalformedJwtException;
 import lombok.Getter;
@@ -23,11 +23,11 @@ public enum ErrorCode {
     AUTHENTICATION_REQUIRED(Category.AUTH, HttpStatus.UNAUTHORIZED, "A008", "인증이 필요합니다.", AuthenticationCredentialsNotFoundException.class),
 
     // 회원 ( Member )
-    USER_ALREADY_EXISTS(Category.MEMBER, HttpStatus.CONFLICT, "M001", "이미 가입된 사용자 입니다.", MemberAlreadyExistsException.class),
-    INVALID_CREDENTIALS(Category.MEMBER, HttpStatus.UNAUTHORIZED, "M002", "아이디 또는 비밀번호가 올바르지 않습니다.", InvalidEmailAndPasswordException.class),
+    MEMBER_ALREADY_EXISTS(Category.MEMBER, HttpStatus.CONFLICT, "M001", "이미 가입된 사용자 입니다.", MemberAlreadyExistsException.class),
+    INVALID_CREDENTIALS(Category.MEMBER, HttpStatus.UNAUTHORIZED, "M002", "아이디 또는 비밀번호가 올바르지 않습니다.", InvalidCredentialsException.class),
 
     // 서버 오류
-    INTERNAL_SERVER_ERROR(Category.SERVER, HttpStatus.INTERNAL_SERVER_ERROR, "S001", "서버 내부 오류가 발생했습니다.", null);;
+    INTERNAL_SERVER_ERROR(Category.SERVER, HttpStatus.INTERNAL_SERVER_ERROR, "S001", "서버 내부 오류가 발생했습니다.", null);
 
 
     private final Category category;

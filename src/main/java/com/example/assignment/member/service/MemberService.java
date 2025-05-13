@@ -1,11 +1,15 @@
 package com.example.assignment.member.service;
 
 import com.example.assignment.common.auth.JwtTokenProvider;
-import com.example.assignment.common.exception.custom.InvalidEmailAndPasswordException;
+import com.example.assignment.common.exception.custom.InvalidCredentialsException;
 import com.example.assignment.common.exception.custom.MemberAlreadyExistsException;
 import com.example.assignment.member.domain.Member;
 import com.example.assignment.member.domain.Role;
-import com.example.assignment.member.dto.*;
+import com.example.assignment.member.dto.request.MemberSignupReq;
+import com.example.assignment.member.dto.request.MemberloginReq;
+import com.example.assignment.member.dto.response.MemberInfoRes;
+import com.example.assignment.member.dto.response.MemberSignupRes;
+import com.example.assignment.member.dto.response.MemberloginRes;
 import com.example.assignment.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -55,13 +59,13 @@ public class MemberService {
      *
      * @param request {@link MemberloginReq} 로그인 요청 DTO <br>
      * @return {@link MemberloginRes} JWT 응답 DTO <br>
-     * @throws InvalidEmailAndPasswordException 이메일 또는 비밀번호 불일치 시 예외 발생
+     * @throws InvalidCredentialsException 이메일 또는 비밀번호 불일치 시 예외 발생
      */
     public MemberloginRes login(MemberloginReq request) {
         Member findMember = memberRepository.findByEmailOrThrow(request.getEmail());
 
         if (!isValidMember(request.getPassword(), findMember.getPassword())) {
-            throw new InvalidEmailAndPasswordException();
+            throw new InvalidCredentialsException();
         }
 
         String token = jwtTokenProvider.createToken(
@@ -117,9 +121,9 @@ public class MemberService {
      * @param email 대상 회원 이메일 <br>
      * @param newRole {@link Role} 새로 부여할 권한 (USER 또는 ADMIN)
      */
-    public void updateMemberRole(String email, Role newRole) {
-        memberRepository.findByEmailOrThrow(email);
-        memberRepository.updateRole(email, newRole);
+    public MemberInfoRes updateMemberRole(String email, Role newRole) {
+        Member updateMember = memberRepository.updateRole(email, newRole);
+        return MemberInfoRes.from(updateMember);
     }
 
     /**

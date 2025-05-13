@@ -1,6 +1,6 @@
 package com.example.assignment.member.repository;
 
-import com.example.assignment.common.exception.custom.InvalidEmailAndPasswordException;
+import com.example.assignment.common.exception.custom.InvalidCredentialsException;
 import com.example.assignment.member.domain.Member;
 import com.example.assignment.member.domain.Role;
 import org.springframework.stereotype.Repository;
@@ -23,7 +23,7 @@ public class MemberRepository {
 
     public Member findByEmailOrThrow(String email) {
         return Optional.ofNullable(store.get(email))
-                .orElseThrow(InvalidEmailAndPasswordException::new);
+                .orElseThrow(InvalidCredentialsException::new);
     }
 
     public boolean existsByEmail(String email) {
@@ -38,10 +38,10 @@ public class MemberRepository {
         store.remove(email);
     }
 
-    public void updateRole(String email, Role newRole) {
-        store.computeIfPresent(email, (k, member) -> {
+    public Member updateRole(String email, Role newRole) {
+        return Optional.ofNullable(store.computeIfPresent(email, (k, member) -> {
             member.setRole(newRole);
             return member;
-        });
+        })).orElseThrow(InvalidCredentialsException::new);
     }
 }
