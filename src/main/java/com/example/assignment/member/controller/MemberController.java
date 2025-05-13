@@ -1,5 +1,6 @@
 package com.example.assignment.member.controller;
 
+import com.example.assignment.member.domain.Role;
 import com.example.assignment.member.dto.MemberSignupReq;
 import com.example.assignment.member.dto.MemberSignupRes;
 import com.example.assignment.member.dto.MemberloginReq;
@@ -21,7 +22,7 @@ public class MemberController {
 
     @PostMapping("/signup")
     public ResponseEntity<MemberSignupRes> signup(@RequestBody MemberSignupReq request) {
-        return ResponseEntity.ok().body(memberService.signup(request));
+        return ResponseEntity.ok().body(memberService.signup(request, Role.MEMBER));
     }
 
     @PostMapping("/login")

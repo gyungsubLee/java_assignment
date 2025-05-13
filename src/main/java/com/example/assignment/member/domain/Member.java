@@ -9,6 +9,8 @@ import lombok.NoArgsConstructor;
 public class Member {
     private Long id;
 
+    private  Role role;
+
     private final String username;
 
     private final String nickname;
@@ -17,18 +19,21 @@ public class Member {
 
     private final String password;
 
-    private final Role role;
+
+    @Builder
+    public Member(Role role, String username, String nickname, String email, String password) {
+        this.role = role != null ? role : Role.MEMBER;
+        this.username = username;
+        this.nickname = nickname;
+        this.email = email;
+        this.password = password;
+    }
 
     public void setId(Long id) {
         this.id = id;
     }
 
-    @Builder
-    public Member(String username, String nickname, String email, String password, Role role) {
-        this.username = username;
-        this.nickname = nickname;
-        this.email = email;
-        this.password = password;
-        this.role = role != null ? role : Role.USER;
+    public void setRole(Role newRole) {
+        this.role = newRole;
     }
 }

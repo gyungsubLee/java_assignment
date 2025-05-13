@@ -9,6 +9,7 @@ import io.jsonwebtoken.MalformedJwtException;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
 
 @Getter
 @RequiredArgsConstructor
@@ -19,6 +20,7 @@ public enum ErrorCode {
     INVALID_TOKEN(Category.AUTH, HttpStatus.UNAUTHORIZED, "A002", "유효하지 않은 토큰입니다.", InvalidTokenException.class),
     EXPIRED_TOKEN(Category.AUTH, HttpStatus.UNAUTHORIZED, "A003", "토큰이 만료되었습니다.", ExpiredJwtException.class),
     MALFORMED_TOKEN(Category.AUTH, HttpStatus.UNAUTHORIZED, "A004", "손상된 토큰입니다.", MalformedJwtException.class),
+    AUTHENTICATION_REQUIRED(Category.AUTH, HttpStatus.UNAUTHORIZED, "A008", "인증이 필요합니다.", AuthenticationCredentialsNotFoundException.class),
 
     // 회원 ( Member )
     USER_ALREADY_EXISTS(Category.MEMBER, HttpStatus.CONFLICT, "M001", "이미 가입된 사용자 입니다.", MemberAlreadyExistsException.class),

@@ -36,13 +36,18 @@ public class JwtAuthFilter extends OncePerRequestFilter {
     @Value("${jwt.secretKey}")
     private String secretKey;
 
+    private static final String HEADER_AUTHORIZATION = "Authorization";
+    private static final String TOKEN_PREFIX = "Bearer ";
+    private static final String CLAIM_ROLE = "role";
+    private static final String ROLE_PREFIX = "ROLE_";
+
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
                                     FilterChain filterChain) throws ServletException, IOException {
-        String token = request.getHeader("Authorization");
+        String token = request.getHeader(HEADER_AUTHORIZATION);
 
         try {
-            if (token != null && token.startsWith("Bearer ")) {
+            if (token != null && token.startsWith(TOKEN_PREFIX)) {
                 String jwtToken = token.substring(7);
                 Claims claims = Jwts.parserBuilder()
                         .setSigningKey(getSigningKey())
@@ -50,8 +55,8 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                         .parseClaimsJws(jwtToken)
                         .getBody();
 
-                String role = String.valueOf(claims.get("role"));
-                if (!role.startsWith("ROLE_")) role = "ROLE_" + role;
+                String role = String.valueOf(claims.get(CLAIM_ROLE));
+                if (!role.startsWith(ROLE_PREFIX)) role = ROLE_PREFIX + role;
 
                 List<GrantedAuthority> authorities = List.of(new SimpleGrantedAuthority(role));
 
