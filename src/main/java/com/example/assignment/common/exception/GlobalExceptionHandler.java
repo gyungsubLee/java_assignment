@@ -10,6 +10,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import java.nio.file.AccessDeniedException;
 import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -20,6 +21,12 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(BusinessException.class)
     public ResponseEntity<DefaultErrorResponse> handleBusinessException(BusinessException ex) {
+        ErrorCode errorCode = ExceptionResolver.resolveErrorCode(ex);
+        return buildErrorResponse(errorCode, errorCode.getMessage());
+    }
+
+    @ExceptionHandler(AccessDeniedException.class)
+    public ResponseEntity<DefaultErrorResponse> handleBusinessException(RuntimeException ex) {
         ErrorCode errorCode = ExceptionResolver.resolveErrorCode(ex);
         return buildErrorResponse(errorCode, errorCode.getMessage());
     }
@@ -42,11 +49,11 @@ public class GlobalExceptionHandler {
         return buildErrorResponse(errorCode, errorCode.getMessage());
     }
 
-    @ExceptionHandler(Throwable.class)
-    public ResponseEntity<DefaultErrorResponse> handleUnknownException(Throwable ex, HttpServletRequest request) {
-        ErrorCode errorCode = ErrorCode.INTERNAL_SERVER_ERROR;
-        return buildErrorResponse(errorCode, errorCode.getMessage());
-    }
+//    @ExceptionHandler(Throwable.class)
+//    public ResponseEntity<DefaultErrorResponse> handleUnknownException(Throwable ex, HttpServletRequest request) {
+//        ErrorCode errorCode = ErrorCode.INTERNAL_SERVER_ERROR;
+//        return buildErrorResponse(errorCode, errorCode.getMessage());
+//    }
 
     @Schema(hidden = true)
     private <T> ResponseEntity<ErrorResponse<T>> buildErrorResponse(ErrorCode errorCode, T message) {

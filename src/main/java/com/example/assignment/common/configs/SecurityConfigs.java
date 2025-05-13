@@ -1,5 +1,6 @@
 package com.example.assignment.common.configs;
 
+import com.example.assignment.common.auth.CustomAccessDeniedHandler;
 import com.example.assignment.common.auth.JwtAuthFilter;
 import com.example.assignment.common.auth.JwtAuthenticationEntryPoint;
 import lombok.RequiredArgsConstructor;
@@ -24,9 +25,10 @@ public class SecurityConfigs {
 
     private final JwtAuthFilter jwtAuthFilter;
     private final JwtAuthenticationEntryPoint authenticationEntryPoint;
+    private final CustomAccessDeniedHandler accessDeniedHandler;
 
     public static final String CORS_ALLOWED_ORIGIN = "http://localhost:3000";
-    public static final String ADMIN_ENDPOINT_PATTERN = "/admin/**";
+    public static final String ADMIN_ENDPOINT_PATTERN = "/api/v1/admin/**";
     public static final String ROLE_ADMIN = "ADMIN";  // ROLE_ADMIN 으로 인식
 
     public static final String[] PUBLIC_ENDPOINTS = {
@@ -46,7 +48,9 @@ public class SecurityConfigs {
                 .csrf(AbstractHttpConfigurer::disable)
                 .httpBasic(AbstractHttpConfigurer::disable)
                 .exceptionHandling(exception -> exception
-                        .authenticationEntryPoint(authenticationEntryPoint))
+                        .authenticationEntryPoint(authenticationEntryPoint)
+                        .accessDeniedHandler(accessDeniedHandler)
+                )
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(PUBLIC_ENDPOINTS).permitAll()
                         .requestMatchers(ADMIN_ENDPOINT_PATTERN).hasRole(ROLE_ADMIN)

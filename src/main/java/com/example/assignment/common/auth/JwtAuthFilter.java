@@ -1,5 +1,6 @@
 package com.example.assignment.common.auth;
 
+import com.example.assignment.common.exception.custom.InvalidAuthHeaderException;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -70,7 +71,13 @@ public class JwtAuthFilter extends OncePerRequestFilter {
             filterChain.doFilter(request, response);
 
         } catch (Exception e) {
-            log.warn("JWT 인증 필터 오류", e);
+            if (e instanceof InvalidAuthHeaderException) {
+                log.warn("Authorization 헤더 형식 오류", e);
+            } else if (e instanceof io.jsonwebtoken.JwtException) {
+                log.warn("JWT 토큰 파싱 오류", e);
+            } else {
+                log.error("Unhandled Exception 발생", e);
+            }
             errorResponder.sendErrorResponse(request, response, e);
         }
     }
