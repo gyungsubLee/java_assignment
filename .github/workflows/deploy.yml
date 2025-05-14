@@ -34,15 +34,15 @@ jobs:
 
       - name: Ensure remote directory exists
         run: |
-          ssh -i ~/.ssh/id_rsa ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} "mkdir -p /home/ubuntu/app"
+          ssh -i ~/.ssh/id_rsa ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} "mkdir -p /home/ubuntu/app/build/libs"
 
       - name: Copy jar to EC2
-        run: scp -i ~/.ssh/id_rsa build/libs/*.jar ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }}:/home/ubuntu/app/app.jar
+        run: scp -i ~/.ssh/id_rsa build/libs/*.jar ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }}:/home/ubuntu/app/build/libs
 
       - name: Deploy app on EC2
         run: |
           ssh -i ~/.ssh/id_rsa ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} << 'EOF'
-            APP_PATH="/home/ubuntu/app/app.jar"
+            APP_PATH="/home/ubuntu/app/build/libs/assignment.jar"
             LOG_PATH="/home/ubuntu/app/app.log"
           
             # 종료
