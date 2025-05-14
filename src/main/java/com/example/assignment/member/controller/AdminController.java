@@ -25,6 +25,7 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/admin")
+@ApiAccessDeniedException
 public class AdminController {
 
     private final MemberService memberService;
