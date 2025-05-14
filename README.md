@@ -1,4 +1,4 @@
-#  과제(java) : Spring Boot 기반 JWT 인증/인가 및 AWS 배포
+# [ 과제 ]  Spring Boot 기반 JWT 인증/인가 및 AWS 배포
 
 > - 바로 인턴 12기 -  백엔드 개발 과제(java)<br>
 > - 기간: 25.05.12(수)  ~ 25.05.15(목)
@@ -13,12 +13,16 @@
 ![JUnit](https://img.shields.io/badge/JUnit-5-red?logo=junit5)
 ![Spring Security](https://img.shields.io/badge/Spring%20Security-6.2.2-green?logo=springsecurity)
 
+---
+
 
 ### 📑 명세서 및 베포
 
 - #### API 문서: http://15.165.3.241:8000/api-test
 
 - #### EC2 엔드포인트:  http://15.165.3.241:8000/
+
+---
 
 ### 📌 요구사항
 
@@ -27,15 +31,18 @@
 - Swagger 를 통한 API 문서화
 -  AWS EC2 베포
 
+---
+
+
 ### 💻 개발
 
 #### 1. 기능 개발 - 사용자 인증/인가
 
 - 일반 사용자(Member) 및 관리자(Admin) 회원가입, 로그인 API 개발
 - JWT를 이용하여 Access Token 발급 및 검증
+-  요구사항에 맞게 성공 및 실패 케이스 응답 포맷 설정
 - 일반 사용자(Member) 및 관리자(Admin) n) 역할(Role)을 구분하여 특정 API 접근을 제한
     - 예) 관리자 권한 부여 API
-- 요구사항에 맞게 성공 및 실패 케이스 응답 포맷 설정
 
 #### 2. 테스트
 - JwtProvider 단위 테스트
@@ -44,11 +51,9 @@
 #### 3. API 명세서
 - Swagger를 사용한 API 문서화
 
-#### 배포
+#### 4. 배포
 -  AWS EC2 인스턴스 생성 및 기본 환경 구축
--  github actions를 통한 자동 베포 
+-  CI/CD - github actions를 통한 자동 베포 
 
 
-<br/>
-<br/>
 <br/>
