@@ -30,7 +30,7 @@ jobs:
         run: ./gradlew clean test
         env:
           JWT_SECRET_KEY: ${{ secrets.JWT_SECRET_KEY }}
-          JWT_EXPIRATION: 360000
+          JWT_EXPIRATION: ${{ secrets.JWT_EXPIRATION }}
 
       - name: Build with Gradle
         run: ./gradlew clean build -x test
@@ -64,8 +64,8 @@ jobs:
             # 실행
             echo "[INFO] 애플리케이션을 실행합니다"
             nohup java \
-              -DJWT_SECRET_KEY="${JWT_SECRET_KEY}" \
-              -DJWT_EXPIRATION="${JWT_EXPIRATION}" \
+              -DJWT_SECRET_KEY="${{ secrets.JWT_SECRET_KEY }}" \
+              -DJWT_EXPIRATION="${{ secrets.JWT_EXPIRATION }}" \
               -jar "$APP_PATH" > "$LOG_PATH" 2>&1 &
           
             echo "[INFO] 배포 완료. 로그 출력:"
