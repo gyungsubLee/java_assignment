@@ -39,8 +39,8 @@ public class AdminController {
                     mediaType = "application/json",
                     schema = @Schema(example = """
                             {
-                              "username": "admin123",
-                              "nickname": "홍길동",
+                              "username": "홍길동",
+                              "nickname": "admin123",
                               "roles": ["ADMIN"]
                             }
                             """)

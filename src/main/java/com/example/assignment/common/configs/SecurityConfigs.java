@@ -37,7 +37,7 @@ public class SecurityConfigs {
             "/v3/api-docs/**",
             "/api/v1/members/signup",
             "/api/v1/members/login",
-            "/error"
+            "/test/create-admin" // 관리자 권한 테스트용 임시 API
     };
 
 
