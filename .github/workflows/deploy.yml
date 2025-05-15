@@ -22,6 +22,9 @@ jobs:
 
       - name: Run Tests with Gradle
         run: ./gradlew clean test
+        env:
+          JWT_SECRET_KEY: ${{ secrets.JWT_SECRET_KEY }}
+          JWT_EXPIRATION: 360000
 
       - name: Build with Gradle
         run: ./gradlew clean build -x test
