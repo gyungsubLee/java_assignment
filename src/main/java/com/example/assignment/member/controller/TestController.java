@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 
-@Tag(name = "테스용 관리자 생성 API", description = "관리자 권한 API 테스트를 위한 임시 API")
+@Tag(name = "테스트용 관리자 생성 API", description = "관리자 권한 API 테스트를 위한 임시 API")
 @RestController
 @RequestMapping("/test")
 @RequiredArgsConstructor
