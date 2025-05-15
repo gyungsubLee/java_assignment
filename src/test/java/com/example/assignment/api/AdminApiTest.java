@@ -6,18 +6,27 @@ import com.example.assignment.member.dto.response.MemberloginRes;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.ResponseEntity;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestClient;
 
 import static org.assertj.core.api.Assertions.*;
 
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@TestPropertySource(properties = {
+        "JWT_SECRET_KEY=7J6E7Iuc7YWM7Iqk7Yq47Jqp7YKk7J6E7Iuc7YWM7Iqk7Yq47Jqp7YKk7J6E7Iuc7YWM7Iqk7Yq47Jqp7YKk7J6E7Iuc7YWM7Iqk7Yq47Jqp7YKk7J6E7Iuc7YWM7Iqk7Yq47Jqp7YKk7J6E7Iuc7YWM7Iqk7Yq47Jqp7YKk7J6E7Iuc7YWM7Iqk7Yq47Jqp7YKk7J6E7Iuc7YWM7Iqk7Yq47Jqp7YKk7J6E7Iuc7YWM7Iqk7Yq47Jqp7YKk7J6E7Iuc7YWM7Iqk7Yq47Jqp7YKk7J6E7Iuc7YWM7Iqk7Yq47Jqp7YKk7J6E7Iuc7YWM7Iqk7Yq47Jqp7YKk7J6E7Iuc7YWM7Iqk7Yq47Jqp7YKk7J6E7Iuc7YWM7Iqk7Yq47Jqp7YKk7J6E7Iuc7YWM7Iqk7Yq47Jqp7YKk",
+        "JWT_EXPIRATION=3600000" // 필요한 다른 키도 함께
+})
 public class AdminApiTest {
 
-    RestClient restClient = RestClient.create("http://0.0.0.0:8080");
+    @LocalServerPort
+    int port;
+
+    RestClient restClient;
 
     String memberToken;
     String adminToken;
@@ -25,83 +34,68 @@ public class AdminApiTest {
     String memberEmail;
     String adminEmail;
 
-    @DisplayName("일반 유저, 관리자 토큰 생성")
     @BeforeEach
     void setUp() {
+        this.restClient = RestClient.create("http://localhost:" + port);
+
         memberEmail = generateUniqueEmail("member");
         adminEmail = generateUniqueEmail("admin");
 
-        MemberSignupReq memberSignupReq = new MemberSignupReq("일반유저", "memebr123", memberEmail, "member123!");
-        MemberSignupReq adminSignupReq = new MemberSignupReq("관리자", "admin123", adminEmail, "admin123!");
-
         // 회원가입
-        signup(memberSignupReq, "/api/v1/members/signup");
-        signup(adminSignupReq, "/test/create-admin");
+        signup(new MemberSignupReq("일반유저", "memebr123", memberEmail, "member123!"), "/api/v1/members/signup");
+        signup(new MemberSignupReq("관리자", "admin123", adminEmail, "admin123!"), "/test/create-admin");
 
         // 로그인
-        MemberloginRes memberRes = login(new MemberLoginReq(memberEmail, "member123!"));
-        memberToken = memberRes.getToken();
-
-        MemberloginRes adminRes = login(new MemberLoginReq(adminEmail, "admin123!"));
-        adminToken = adminRes.getToken();
+        memberToken = login(new MemberLoginReq(memberEmail, "member123!")).getToken();
+        adminToken = login(new MemberLoginReq(adminEmail, "admin123!")).getToken();
     }
 
-    @DisplayName("관리자 권한으로는 새로운 관리자를 생성할 수 있다")
     @Test
-    void shouldCreateNewAdmin_WhenAdminRequests() {
+    @DisplayName("관리자 권한으로는 새로운 관리자를 생성할 수 있다")
+    void shouldCreateAdmin_WhenRequestedByAdmin() {
         // given
         String newAdminEmail = generateUniqueEmail("newadmin");
-        MemberSignupReq newAdminReq = new MemberSignupReq(
-                "홍길동1",
-                "gildong123",
-                newAdminEmail,
-                "securePass123!"
-        );
+        MemberSignupReq newAdminReq = new MemberSignupReq("홍길동1", "gildong123", newAdminEmail, "securePass123!");
 
         // when
-        ResponseEntity<MemberSignupRes> response = restClient.post()
-                .uri("/api/v1/admin/signup")
-                .header("Authorization", "Bearer " + adminToken)
-                .body(newAdminReq)
-                .retrieve()
-                .toEntity(MemberSignupRes.class);
+        ResponseEntity<MemberSignupRes> response = postWithToken(
+                "/api/v1/admin/signup", adminToken, newAdminReq, MemberSignupRes.class
+        );
 
         // then
         assertThat(response.getStatusCode().is2xxSuccessful()).isTrue();
-        assertThat(response.getBody().getRoles().get(0)).isEqualTo(Role.ADMIN);
+        assertThat(response.getBody().getRoles()).contains(Role.ADMIN);
     }
 
-    @DisplayName("유저 권한으로는 새로운 관리자를 생성할 수 없다 (AccessDeniedException 발생 확인)")
     @Test
-    void shouldThrowAccessDeniedException_WhenMemberTriesToCreateAdmin() {
+    @DisplayName("유저 권한으로는 새로운 관리자를 생성할 수 없다 (403 Forbidden)")
+    void shouldFailToCreateAdmin_WhenRequestedByUser() {
         // given
-        String unauthorizedEmail = generateUniqueEmail("unauthorized");
-        MemberSignupReq newAdminReq = new MemberSignupReq(
-                "홍길동2",
-                "gildong1234",
-                unauthorizedEmail,
-                "securePass123!"
-        );
+        String unauthorizedEmail = generateUniqueEmail("unauth");
+        MemberSignupReq newAdminReq = new MemberSignupReq("홍길동2", "gildong234", unauthorizedEmail, "securePass123!");
 
         // when
-        Throwable thrown = catchThrowable(() -> restClient.post()
-                .uri("/api/v1/admin/signup")
-                .header("Authorization", "Bearer " + memberToken)
-                .body(newAdminReq)
-                .retrieve()
-                .body(MemberSignupRes.class)
+        Throwable thrown = catchThrowable(() ->
+                postWithToken("/api/v1/admin/signup", memberToken, newAdminReq, MemberSignupRes.class)
         );
 
         // then
-        assertThat(thrown).isNotNull();
-        assertThat(thrown).isInstanceOfAny(HttpClientErrorException.Forbidden.class);
+        assertThat(thrown).isInstanceOf(HttpClientErrorException.Forbidden.class);
+        assertThat(thrown).hasMessageContaining("403");
     }
 
-    private String generateUniqueEmail(String prefix) {
-        return prefix + System.currentTimeMillis() + "@xample.com";
+
+
+    private <T> ResponseEntity<T> postWithToken(String uri, String token, Object body, Class<T> responseType) {
+        return restClient.post()
+                .uri(uri)
+                .header("Authorization", "Bearer " + token)
+                .body(body)
+                .retrieve()
+                .toEntity(responseType);
     }
 
-    MemberSignupRes signup(MemberSignupReq request, String url) {
+    private MemberSignupRes signup(MemberSignupReq request, String url) {
         return restClient.post()
                 .uri(url)
                 .body(request)
@@ -109,29 +103,33 @@ public class AdminApiTest {
                 .body(MemberSignupRes.class);
     }
 
-    MemberloginRes login(MemberLoginReq request) {
+    private MemberloginRes login(MemberLoginReq request) {
         return restClient.post()
                 .uri("/api/v1/members/login")
                 .body(request)
                 .retrieve()
                 .body(MemberloginRes.class);
     }
-}
 
-@Getter
-@NoArgsConstructor
-@AllArgsConstructor
-class MemberSignupReq {
-    private String username;
-    private String nickname;
-    private String email;
-    private String password;
-}
+    private String generateUniqueEmail(String prefix) {
+        return prefix + System.currentTimeMillis() + "@xample.com";
+    }
 
-@Getter
-@NoArgsConstructor
-@AllArgsConstructor
-class MemberLoginReq {
-    private String email;
-    private String password;
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    static class MemberSignupReq {
+        private String username;
+        private String nickname;
+        private String email;
+        private String password;
+    }
+
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    static class MemberLoginReq {
+        private String email;
+        private String password;
+    }
 }
