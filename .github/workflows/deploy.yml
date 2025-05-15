@@ -5,9 +5,11 @@ on:
     branches:
       - main
     paths:
-      - '**.java'
-      - 'build.gradle'
       - 'src/**'
+      - 'actions/**'
+      - 'build.gradle'
+      - 'settings.gradle'
+      - '.github/workflows/**'
 
 jobs:
   deploy:
