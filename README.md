@@ -10,8 +10,8 @@
 ![Gradle](https://img.shields.io/badge/Gradle-8.7-blue?logo=gradle)
 ![Swagger](https://img.shields.io/badge/Swagger-2.2.0-yellow?logo=swagger)
 ![JWT](https://img.shields.io/badge/JWT-0.11.5-orange)
-![JUnit](https://img.shields.io/badge/JUnit-5-red?logo=junit5)
 ![Spring Security](https://img.shields.io/badge/Spring%20Security-6.2.2-green?logo=springsecurity)
+![JUnit](https://img.shields.io/badge/JUnit-5-red?logo=junit5)
 
 ---
 
